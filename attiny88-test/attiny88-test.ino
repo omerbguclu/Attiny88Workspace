@@ -58,13 +58,12 @@ void setup()
     pinMode(RELAY_PIN, OUTPUT);
 
     mySerial.begin(9600);
-#if defined(__AVR_ATmega32U4__) || defined(SERIAL_PORT_USBVIRTUAL) || defined(SERIAL_USB) || defined(SERIALUSB_PID) || defined(ARDUINO_attiny3217)
-    delay(4000); // To be able to connect Serial monitor after reset or power up and before first print out. Do not wait for an attached Serial Monitor!
-#endif
+    delay(1000);
+
     // Just to know which program is running on my Arduino
     mySerial.println(F("START " __FILE__ " from " __DATE__ "\r\nUsing library version " VERSION_IRREMOTE));
 
-    // Start the receiver and if not 3. parameter specified, take LED_BUILTIN pin from the internal boards definition as default feedback LED
+    // // Start the receiver and if not 3. parameter specified, take LED_BUILTIN pin from the internal boards definition as default feedback LED
     IrReceiver.begin(IR_RECEIVE_PIN, ENABLE_LED_FEEDBACK);
 
     // mySerial.print(F("Ready to receive IR signals at pin "));
@@ -82,6 +81,7 @@ void loop()
         // IR received, toggle the relay
         if (millis() - last > 250)
         {
+            mySerial.println(IrReceiver.decodedIRData.command);
             switch (IrReceiver.decodedIRData.command)
             {
             case CH_MINUS:
@@ -106,6 +106,7 @@ void loop()
             }
         }
         last = millis();
+
         IrReceiver.resume(); // Enable receiving of the next value
     }
 }
