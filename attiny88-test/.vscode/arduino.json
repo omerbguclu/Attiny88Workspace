@@ -1,0 +1,4 @@
+{
+    "board": "mhetlive:avr:MHETtiny88",
+    "sketch": "attiny88-test.ino"
+}
