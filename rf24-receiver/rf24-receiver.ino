@@ -27,7 +27,7 @@ SoftwareSerial mySerial(4, 5); // RX, TX
 
 /*Create a unique pipe out. The receiver has to
   wear the same unique code*/
-uint8_t pipeIn[6]  = "1Node"; // IMPORTANT: The same as in the receiver!!!
+uint8_t pipeIn[6] = "1Node"; // IMPORTANT: The same as in the receiver!!!
 /*//////////////////////////////////////////////////////*/
 
 /*Create the data struct we will send
@@ -36,23 +36,26 @@ uint8_t pipeIn[6]  = "1Node"; // IMPORTANT: The same as in the receiver!!!
 RF24 radio(16, 10); // select  CSN and CE  pins
 struct MyData
 {
-    byte pot_value;
+    byte varx;
+    byte vary;
+    byte button;
 };
-int LED = 3;
+
 MyData data;
 /*//////////////////////////////////////////////////////*/
 
 // This function will only set the value to  0 if the connection is lost...
 void resetData()
 {
-    data.pot_value = 0;
+    data.varx = 0;
+    data.vary = 0;
+    data.button = 0;
 }
 
 /**************************************************/
 
 void setup()
 {
-    pinMode(LED, OUTPUT);
     mySerial.begin(9600); // Set the speed to 9600 bauds if you want.
     // You should always have the same speed selected in the serial monitor
     resetData();
@@ -70,7 +73,12 @@ void recvData()
 {
     while (radio.available())
     {
-        radio.read(&data, sizeof(MyData));
+        radio.read(&data, 3);
+        mySerial.print(data.varx);
+        mySerial.print(" ");
+        mySerial.print(data.vary);
+        mySerial.print(" ");
+        mySerial.println(data.button);
         lastRecvTime = millis(); // here we receive the data
     }
 }
@@ -90,9 +98,5 @@ void loop()
     }
     else
     {
-      mySerial.print("Potentiometer: ");
-      mySerial.println(data.pot_value);
-    // analogWrite(LED, data.pot_value);      
     }
-
 }

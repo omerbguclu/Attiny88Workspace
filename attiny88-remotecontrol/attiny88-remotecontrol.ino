@@ -40,10 +40,10 @@
 /*
  * Define macros for input and output pin etc.
  */
-#include "PinDefinitionsAndMore.h"
-
-#include <IRremote.hpp>
 #include <SoftwareSerial.h>
+#include "PinDefinitionsAndMore.h"
+#include <IRremote.hpp>
+
 SoftwareSerial mySerial(10, 11); // RX, TX
 
 #define RELAY_PIN 5
@@ -54,11 +54,12 @@ SoftwareSerial mySerial(10, 11); // RX, TX
 
 void setup()
 {
+    Serial.begin(57600);
     pinMode(LED_BUILTIN, OUTPUT);
     pinMode(RELAY_PIN, OUTPUT);
 
     mySerial.begin(9600);
-    delay(1000);
+    delay(100);
 
     // Just to know which program is running on my Arduino
     mySerial.println(F("START " __FILE__ " from " __DATE__ "\r\nUsing library version " VERSION_IRREMOTE));
